@@ -4,24 +4,23 @@
 {
     app.beginUndoGroup("Add Comp to Render Queue");
 
-    // ファイル名入力
-    var outputFileName = prompt("Enter the output file name", "output");
+    // 現在のコンポジションを取得
+    var activeComp = app.project.activeItem;
 
-    // キャンセル時
-    if (outputFileName == null) {
-        // alert("Cancelled");
-    }
-    else {
-        // 現在のコンポジションを取得
-        var activeComp = app.project.activeItem;
+    // コンポジションが選択されていない場合のエラーチェック
+    if (activeComp == null || !(activeComp instanceof CompItem)) {
+        alert("No active composition selected.");
+    } else {
+        // ファイル名入力を現在のコンポジション名に設定
+        var outputFileName = prompt("Enter the output file name", activeComp.name);
 
-        // コンポジションが選択されていない場合
-        if (activeComp == null || !(activeComp instanceof CompItem)) {
-            alert("No active composition selected.");
-        }
-        else {
+        // キャンセル時の処理
+        if (outputFileName == null) {
+            // alert("Cancelled");
+        } else {
             // 出力ディレクトリのパスを設定
             var outputDir = new Folder(app.project.file.path + "/render");
+            
             // ない場合は作成
             if (!outputDir.exists) {
                 outputDir.create();
@@ -38,6 +37,7 @@
             // alert("Added to render queue with file name: " + outputFileName);
         }
     }
+
     app.endUndoGroup();
 }
 
